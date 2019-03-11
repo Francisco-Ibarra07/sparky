@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="joy" type="joy_node" name="joy_node" output="screen"/>
+    <node pkg="controls" type="ds4Interpreter" name="ds4Interpreter" output="screen"/>
+    <node pkg="controls" type="node_RaspberryPi" name="node_RaspberyPi" output="screen" required="true"/>
+</launch>

@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<robot name="sparky" xmlns:xacro="http://www.ros.org/wiki/xacro">
+ 
+	<!-- Define constants -->
+	<!-- To Access these properties use "${Property_name}" -->
+	<!-- NOTE: ALL masses are in KILOGRAMS (kg) and lengths are in METERS (m)-->
+
+	<!-- PI constant -->
+	<xacro:property name="PI" value="3.1415926535897932384626433832795"/>
+
+	<!-- Plywood properties-->
+	<xacro:property name="PLYWOOD_MASS" value="1"/>
+	<xacro:property name="PLYWOOD_LENGTH" value="0.6096"/>
+	<xacro:property name="PLYWOOD_WIDTH" value="0.6096"/>
+	<xacro:property name="PLYWOOD_HEIGHT" value="0.01905"/>
+
+	<!-- Servo properties -->
+	<xacro:property name="SERVO_MASS" value="0.055"/>
+	<xacro:property name="SERVO_LENGTH" value="0.05410"/>
+	<xacro:property name="SERVO_WIDTH" value="0.02000"/>
+	<xacro:property name="SERVO_HEIGHT" value="0.04425"/>
+	<xacro:property name="SERVO_SHAFT_MASS" value="0.015"/>
+	<xacro:property name="SERVO_SHAFT_RADIUS" value="0.003"/>
+	<xacro:property name="SERVO_SHAFT_LENGTH" value="0.0254"/>
+
+	<!-- Wheel housing structure properties -->
+	<xacro:property name="WH_MASS" value="0.055"/>
+	<xacro:property name="WH_LENGTH" value="0.1016"/>
+	<xacro:property name="WH_WIDTH" value="0.0508"/>
+	<xacro:property name="WH_HEIGHT" value="0.0508"/>
+
+	<!-- Acetal wheel properties -->
+	<xacro:property name="WHEEL_MASS" value="0.046"/>
+	<xacro:property name="WHEEL_RADIUS" value="0.045"/>
+	<xacro:property name="WHEEL_WIDTH" value="0.0236"/>
+
+
+	<!-- Include files from urdf directory -->
+	<xacro:include filename="$(find projx_robot_description)/urdf/projx_robot.gazebo"/>
+	<xacro:include filename="$(find projx_robot_description)/urdf/materials.xacro"/>
+	<xacro:include filename="$(find projx_robot_description)/urdf/point_structure_macro.xacro"/>
+	<xacro:include filename="$(find projx_robot_description)/urdf/inertial_calc_macros.xacro"/>
+	<xacro:include filename="$(find projx_robot_description)/urdf/imu_sensor.xacro"/>
+	<xacro:include filename="$(find projx_robot_description)/urdf/RP_lidar_sensor.xacro"/>
+
+	<!-- Define 2D representation of the base_link -->
+    <link name="base_footprint"/>
+
+    <!-- Robot base link -->
+    <link name="base_link">
+
+    	<!-- Collision parameters for the collision detection engine -->
+    	<collision>
+    		<geometry>
+    			<!-- <mesh filename="package://projx_robot_description/meshes/robot_base_v1.dae"/> -->
+    			<box size="${PLYWOOD_LENGTH} ${PLYWOOD_WIDTH} ${PLYWOOD_HEIGHT}"/>
+    		</geometry>
+    	</collision>
+
+    	<!-- Visual information for rendering model of robot base -->
+        <visual>
+            <geometry>
+                <!-- Plywood is defined as a mesh file -->
+                <mesh filename="package://projx_robot_description/meshes/robot_base_v1.dae"/>
+            </geometry>
+        </visual>
+
+        <!-- Inertia info about robot base for the physics engine to use -->
+        <inertial>
+        	<mass value="${PLYWOOD_MASS}"/>
+        	<box_inertia m="${PLYWOOD_MASS}" x="${PLYWOOD_LENGTH}" y="${PLYWOOD_WIDTH}" z="${PLYWOOD_HEIGHT}"/>
+        </inertial>
+
+    </link>
+
+	<!-- Joint between FOOTPRINT and BASE -->
+    <joint name="footprint_to_base_joint" type="fixed">
+       <parent link="base_footprint"/>
+	   <child link="base_link"/>
+
+    	<!-- The base is about 6" of the ground -->
+        <origin xyz="0 0 0.1524" rpy="0 0 0"/>
+    </joint>
+
+
+                        <!-- ################################## Robot sections ################################## -->
+	<point_structure location="FL" x_translation="1" y_translation="1"/>
+	<point_structure location="FR" x_translation="1" y_translation="-1"/>
+	<point_structure location="RL" x_translation="-1" y_translation="-1"/>
+	<point_structure location="RR" x_translation="-1" y_translation="1"/> 
+
+
+                        <!-- ################################## Sensors ################################## -->
+	<imu_sensor x_offset="0" y_offset="0" z_offset="0" r="0" p="0" y="0"/>
+	<RP_lidar_sensor x_offset="0" y_offset="0" z_offset="${PLYWOOD_HEIGHT}" r="0" p="0" y="0"/> 
+</robot>

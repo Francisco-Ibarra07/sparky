@@ -1,0 +1,32 @@
+<launch>
+    
+    <!-- Load the joint controller configurations onto the Parameter server -->
+    <!-- NOTE be sure to specify namespace here, to the controller_spawner node, and .gazebo file if shit fucks up-->
+    <rosparam file="$(find projx_robot_control)/config/projx_robot_control.yaml" command="load"/>
+
+    <!-- Load the controllers -->
+    <node name="controller_spawner" 
+        pkg="controller_manager"
+        type="spawner" 
+        respawn="false" 
+        output="screen"
+        ns="/sparky"
+        args="joint_state_controller FL_effort_motor_controller FR_effort_motor_controller RL_effort_motor_controller RR_effort_motor_controller
+        FL_effort_servo_controller FR_effort_servo_controller RL_effort_servo_controller RR_effort_servo_controller"
+    />
+
+    <!-- Convert the joint states to TF transforms for rviz -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+        <param name="robot_description" command="$(find xacro)/xacro --inorder $(find projx_robot_description)/urdf/projx_robot.xacro"/>
+        <remap from="/joint_states" to="/sparky/joint_states"/>
+    </node>
+
+    <!-- Initialize base_driver_node which takes in /cmd_vel msgs and makes the simulated robot move -->
+    <node name="base_driver_node" pkg="projx_robot_control" type="base_driver_node" output="screen"/>
+    
+    <!-- Initialize keyboard controller -->
+    <!-- <node name="turtlebot_teleop" pkg="turtlebot_teleop" type="turtlebot_teleop_key" output="screen">
+        <remap from="/turtlebot_teleop/cmd_vel" to="/cmd_vel"/>
+    </node> -->
+
+</launch>

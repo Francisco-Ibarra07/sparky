@@ -1,0 +1,57 @@
+# This file will define three controllers:
+  # 1) One for each wheel
+  # 2) Connections to the joint by the transmission tag
+  # 3) One for publishing the joint states
+
+# This ALSO defines the PID gains to use for this controller
+# NOTE: projx_robot_control.launch file launches this yaml configuration
+
+sparky:
+  # Publish all joint states
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+  
+  # Effort Motor Controllers
+  FL_effort_motor_controller:
+    type: effort_controllers/JointEffortController
+    joint: FL_wheel_housing_structure_to_FL_acetal_wheel_joint
+    pid: {p: 100.0, i: 0.1, d: 10.0}
+
+  FR_effort_motor_controller:
+    type: effort_controllers/JointEffortController
+    joint: FR_wheel_housing_structure_to_FR_acetal_wheel_joint
+    pid: {p: 100.0, i: 0.1, d: 10.0}
+
+  RL_effort_motor_controller:
+    type: effort_controllers/JointEffortController
+    joint: RL_wheel_housing_structure_to_RL_acetal_wheel_joint
+    pid: {p: 100.0, i: 0.1, d: 10.0}
+
+  RR_effort_motor_controller:
+    type: effort_controllers/JointEffortController
+    joint: RR_wheel_housing_structure_to_RR_acetal_wheel_joint
+    pid: {p: 100.0, i: 0.1, d: 10.0}
+
+  
+  # Effort Motor Controllers
+  FL_effort_servo_controller:
+    type: effort_controllers/JointEffortController
+    joint: FL_servo_to_FL_shaft_joint
+    pid: {p: 100.0, i: 0.1, d: 10.0}
+
+  FR_effort_servo_controller:
+    type: effort_controllers/JointEffortController
+    joint: FR_servo_to_FR_shaft_joint
+    pid: {p: 100.0, i: 0.1, d: 10.0}
+
+  RL_effort_servo_controller:
+    type: effort_controllers/JointEffortController
+    joint: RL_servo_to_RL_shaft_joint
+    pid: {p: 100.0, i: 0.1, d: 10.0}
+
+  RR_effort_servo_controller:
+    type: effort_controllers/JointEffortController
+    joint: RR_servo_to_RR_shaft_joint
+    pid: {p: 100.0, i: 0.1, d: 10.0}

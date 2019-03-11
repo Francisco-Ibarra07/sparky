@@ -1,0 +1,23 @@
+
+<?xml version="1.0"?>
+<sdf version="1.4">
+
+	<!-- Here you could directly add models and object with their position. Also the laws of physics may be defined in a world. This is an important step to understand, because in this file you could also attach a specific plugin to an object. The plugin itself contains ROS and Gazebo specific code for more complex behaviors. -->
+
+	<world name="myworld">
+		
+		<!-- Global light source -->
+		<include>
+			<uri>model://sun</uri>
+		</include>
+
+		<!-- Add default ground -->
+		<include>
+			<uri>model://ground_plane</uri>
+		</include>	
+
+	</world>
+
+</sdf>
+
+

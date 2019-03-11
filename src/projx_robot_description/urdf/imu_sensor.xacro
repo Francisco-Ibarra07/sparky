@@ -1,0 +1,28 @@
+<robot>
+	<!-- Reference: https://answers.ros.org/question/12430/modelling-sensorsimu-in-gazebo/ -->
+	<macro name="imu_sensor" params="x_offset y_offset z_offset r p y">
+
+		<link name="imu_link">
+			<inertial>
+				<mass value="0.005"/>
+				<box_inertia m="0.005" x="0.02426" y="0.02426" z="0.00175"/>
+			</inertial>
+			<visual>
+				<geometry>
+					<box size="0.02426 0.02426 0.00175"/>
+				</geometry>
+			</visual>
+			<collision>
+				<geometry>
+                	<box size="0.02426 0.02426 0.00175"/>
+                </geometry>
+			</collision>
+		</link>
+
+		<joint name="base_link_to_imu_joint" type="fixed">
+			<parent link="base_link"/>
+			<child link="imu_link"/>
+			<origin xyz="${x_offset} ${y_offset} ${z_offset}" rpy="${r} ${p} ${y}"/>
+		</joint>
+	</macro>
+</robot>

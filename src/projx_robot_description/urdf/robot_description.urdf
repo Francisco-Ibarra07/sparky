@@ -1,0 +1,349 @@
+<robot name="sparky">
+    
+    <!-- Define 2D representation of the base_link -->
+    <link name="base_footprint"/>
+
+    <!-- Plywood -->
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <!-- Plywood is defined in meters below -->
+                <mesh filename="package://projx_robot_description/meshes/robot_base_v1.dae"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- Joint between FOOTPRINT and BASE -->
+    <joint name="footprint_to_base_joint" type="fixed">
+       <parent link="base_footprint"/>
+	   <child link="base_link"/>
+
+    	<!-- The base is about 6" of the ground -->
+        <origin xyz="0 0 0.1524" rpy="0 0 0"/>
+    </joint>
+                                            <!-- ########### FRONT LEFT SECTION ########### -->
+    <!-- Front left servo link-->
+    <link name="FL_servo_link">
+        <visual>
+            <geometry>
+                <!-- Actual servo dimensions: LxWxH = 54.10mm x 20mm x 44.25mm -->
+                <mesh filename="package://projx_robot_description/meshes/servo_v1.dae"/>
+            </geometry>
+        </visual>
+    </link>
+                                    
+    <!-- Joint between BASE and front left SERVO -->
+    <joint name="base_to_FL_servo_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="FL_servo_link"/>
+
+        <!-- REMEMBER: box size is in TOTAL. Distance from origin to edge is half! -->
+        <origin xyz="0.1682 0.1801 0.0275" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Front left servo shaft -->
+    <link name="FL_shaft_link">
+        <visual>
+            <geometry>
+                <!-- Servo Shaft dimensions: radius=3.0mm, length=25.4mm  -->
+                <cylinder radius="0.003" length="0.0254"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- Joint between FL SERVO and FL SERVO SHAFT -->
+    <joint name="FL_servo_to_FL_shaft_joint" type="revolute">
+        <parent link="FL_servo_link"/>
+        <child link="FL_shaft_link"/>
+        <axis xyz="0 0 1"/>
+	    
+        <!-- This origin offset places the newly created shaft link right in line with the servo's shaft-->
+        <origin xyz="0.00983 0.00102 -0.03319" rpy="0 0 0"/>
+        <limit lower="-0.9" upper="0.9" effort="0.1" velocity="0.005"/>
+    </joint>
+
+    <!-- Front left wheel housing structure link -->
+    <link name="FL_wheel_housing_structure_link">
+        <visual>
+            <geometry>
+                <mesh filename="package://projx_robot_description/meshes/wheel_housing_structure_v1.dae"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- Joint between FL SERVO SHAFT and FL WHEEL HOUSING STRUCTURE -->
+    <joint name="FL_shaft_to_FL_wheel_housing_structure_joint" type="fixed">
+        <parent link="FL_shaft_link"/>
+        <child link="FL_wheel_housing_structure_link"/>
+
+        <!-- This origin offset places the shaft right into the hole of the wheel housing structure -->
+        <origin xyz="-0.01771 0.00 -0.04521" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Front left acetal wheel link -->
+    <link name="FL_acetal_wheel_link">
+    	<visual>
+    	    <geometry>
+    		    <mesh filename="package://projx_robot_description/meshes/acetal_wheel_v1.dae"/>
+    	    </geometry>
+    	</visual>
+    </link>
+
+    <!-- Joint between FL WHEEL HOUSING STRUCTURE and FL ACETAL WHEEL -->
+    <joint name="FL_wheel_housing_structure_to_FL_acetal_wheel_joint" type="revolute">
+    	<parent link="FL_wheel_housing_structure_link"/>
+    	<child link="FL_acetal_wheel_link"/>
+    	
+        <!-- Rotate around the Y axis -->
+        <axis xyz="0 1 0"/>
+
+        <!-- This origin offset places the wheel in line with the rotary encoder hole -->
+    	<origin xyz="0.01853 0 -0.02573"/>
+    	<limit lower="-0.9" upper="0.9" effort="0.1" velocity="0.005"/>
+    </joint>
+
+                                            <!-- ########### FRONT RIGHT SECTION ########### -->
+    <!-- FRONT RIGHT servo link-->
+    <link name="FR_servo_link">
+        <visual>
+            <geometry>
+                <!-- Actual servo dimensions: LxWxH = 54.10mm x 20mm x 44.25mm -->
+                <mesh filename="package://projx_robot_description/meshes/servo_v1.dae"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- Joint between BASE and FRONT RIGHT SERVO -->
+    <joint name="base_to_FR_servo_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="FR_servo_link"/>
+
+        <!-- REMEMBER: box size is in TOTAL. Distance from origin to edge is half! -->
+        <origin xyz="0.1682 -0.1801 0.0275" rpy="0 0 0"/>
+    </joint>
+
+    <!-- FRONT RIGHT servo shaft -->
+    <link name="FR_shaft_link">
+        <visual>
+            <geometry>
+                <!-- Servo Shaft dimensions: radius=3.0mm, length=25.4mm  -->
+                <cylinder radius="0.003" length="0.0254"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- Joint between FR SERVO and FR SERVO SHAFT -->
+    <joint name="FR_servo_to_FR_shaft_joint" type="revolute">
+        <parent link="FR_servo_link"/>
+        <child link="FR_shaft_link"/>
+        <axis xyz="0 0 1"/>
+        
+        <!-- This origin offset places the newly created shaft link right in line with the servo's shaft-->
+        <origin xyz="0.00983 0.00102 -0.03319" rpy="0 0 0"/>
+        <limit lower="-0.9" upper="0.9" effort="0.1" velocity="0.005"/>
+    </joint>
+
+    <!-- FRONT RIGHT wheel housing structure link -->
+     <link name="FR_wheel_housing_structure_link">
+        <visual>
+            <geometry>
+                <mesh filename="package://projx_robot_description/meshes/wheel_housing_structure_v1.dae"/>
+            </geometry>
+        </visual>
+    </link>
+
+     <!-- Joint between FR SERVO SHAFT and FR WHEEL HOUSING STRUCTURE -->
+    <joint name="FR_shaft_to_FR_wheel_housing_structure_joint" type="fixed">
+        <parent link="FR_shaft_link"/>
+        <child link="FR_wheel_housing_structure_link"/>
+
+        <!-- This origin offset places the shaft right into the hole of the wheel housing structure -->
+        <origin xyz="-0.01771 0.00 -0.04521" rpy="0 0 0"/>
+    </joint>
+
+    <!-- FRONT RIGHT acetal wheel link -->
+    <link name="FR_acetal_wheel_link">
+        <visual>
+            <geometry>
+                <mesh filename="package://projx_robot_description/meshes/acetal_wheel_v1.dae"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- Joint between FL WHEEL HOUSING STRUCTURE and FL ACETAL WHEEL -->
+    <joint name="FR_wheel_housing_structure_to_FR_acetal_wheel_joint" type="revolute">
+        <parent link="FR_wheel_housing_structure_link"/>
+        <child link="FR_acetal_wheel_link"/>
+        
+        <!-- Rotate around the Y axis -->
+        <axis xyz="0 1 0"/>
+
+        <!-- This origin offset places the wheel in line with the rotary encoder hole -->
+        <origin xyz="0.01853 0 -0.02573"/>
+        <limit lower="-0.9" upper="0.9" effort="0.1" velocity="0.005"/>
+    </joint>
+
+                                            <!-- ########### REEEEEEEEAR LEFT SECTION ########### -->
+    <!-- REAR RIGHT servo link-->
+    <link name="RR_servo_link">
+        <visual>
+            <geometry>
+                <!-- Actual servo dimensions: LxWxH = 54.10mm x 20mm x 44.25mm -->
+                <mesh filename="package://projx_robot_description/meshes/servo_v1.dae"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- Joint between BASE and REAR RIGHT SERVO -->
+    <joint name="base_to_RR_servo_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="RR_servo_link"/>
+
+        <!-- REMEMBER: box size is in TOTAL. Distance from origin to edge is half! -->
+        <origin xyz="-0.1682 -0.1801 0.0275" rpy="0 0 0"/>
+    </joint>
+
+    <!-- REAR RIGHT servo shaft -->
+    <link name="RR_shaft_link">
+        <visual>
+            <geometry>
+                <!-- Servo Shaft dimensions: radius=3.0mm, length=25.4mm  -->
+                <cylinder radius="0.003" length="0.0254"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- Joint between RR SERVO and RR SERVO SHAFT -->
+    <joint name="RR_servo_to_RR_shaft_joint" type="revolute">
+        <parent link="RR_servo_link"/>
+        <child link="RR_shaft_link"/>
+        <axis xyz="0 0 1"/>
+        
+        <!-- This origin offset places the newly created shaft link right in line with the servo's shaft-->
+        <origin xyz="0.00983 0.00102 -0.03319" rpy="0 0 0"/>
+        <limit lower="-0.9" upper="0.9" effort="0.1" velocity="0.005"/>
+    </joint>
+
+    <!-- FRONT RIGHT wheel housing structure link -->
+     <link name="RR_wheel_housing_structure_link">
+        <visual>
+            <geometry>
+                <mesh filename="package://projx_robot_description/meshes/wheel_housing_structure_v1.dae"/>
+            </geometry>
+        </visual>
+    </link>
+
+     <!-- Joint between RR SERVO SHAFT and RR WHEEL HOUSING STRUCTURE -->
+    <joint name="RR_shaft_to_RR_wheel_housing_structure_joint" type="fixed">
+        <parent link="RR_shaft_link"/>
+        <child link="RR_wheel_housing_structure_link"/>
+
+        <!-- This origin offset places the shaft right into the hole of the wheel housing structure -->
+        <origin xyz="-0.01771 0.00 -0.04521" rpy="0 0 0"/>
+    </joint>
+
+    <!-- FRONT RIGHT acetal wheel link -->
+    <link name="RR_acetal_wheel_link">
+        <visual>
+            <geometry>
+                <mesh filename="package://projx_robot_description/meshes/acetal_wheel_v1.dae"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- Joint between FL WHEEL HOUSING STRUCTURE and FL ACETAL WHEEL -->
+    <joint name="RR_wheel_housing_structure_to_RR_acetal_wheel_joint" type="revolute">
+        <parent link="RR_wheel_housing_structure_link"/>
+        <child link="RR_acetal_wheel_link"/>
+        
+        <!-- Rotate around the Y axis -->
+        <axis xyz="0 1 0"/>
+
+        <!-- This origin offset places the wheel in line with the rotary encoder hole -->
+        <origin xyz="0.01853 0 -0.02573"/>
+        <limit lower="-0.9" upper="0.9" effort="0.1" velocity="0.005"/>
+    </joint>
+
+                                            <!-- ########### REEEEEEEEAR RIGHT SECTION ########### -->
+
+    <!-- REAR LEFT servo link-->
+    <link name="RL_servo_link">
+        <visual>
+            <geometry>
+                <!-- Actual servo dimensions: LxWxH = 54.10mm x 20mm x 44.25mm -->
+                <mesh filename="package://projx_robot_description/meshes/servo_v1.dae"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- Joint between BASE and REAR LEFT SERVO -->
+    <joint name="base_to_RL_servo_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="RL_servo_link"/>
+
+        <!-- REMEMBER: box size is in TOTAL. Distance from origin to edge is half! -->
+        <origin xyz="-0.1682 0.1801 0.0275" rpy="0 0 0"/>
+    </joint>
+
+    <!-- REAR LEFT servo shaft -->
+    <link name="RL_shaft_link">
+        <visual>
+            <geometry>
+                <!-- Servo Shaft dimensions: radius=3.0mm, length=25.4mm  -->
+                <cylinder radius="0.003" length="0.0254"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- Joint between RL SERVO and RL SERVO SHAFT -->
+    <joint name="RL_servo_to_RL_shaft_joint" type="revolute">
+        <parent link="RL_servo_link"/>
+        <child link="RL_shaft_link"/>
+        <axis xyz="0 0 1"/>
+        
+        <!-- This origin offset places the newly created shaft link right in line with the servo's shaft-->
+        <origin xyz="0.00983 0.00102 -0.03319" rpy="0 0 0"/>
+        <limit lower="-0.9" upper="0.9" effort="0.1" velocity="0.005"/>
+    </joint>
+
+    <!-- REAR LEFT wheel housing structure link -->
+     <link name="RL_wheel_housing_structure_link">
+        <visual>
+            <geometry>
+                <mesh filename="package://projx_robot_description/meshes/wheel_housing_structure_v1.dae"/>
+            </geometry>
+        </visual>
+    </link>
+
+     <!-- Joint between RL SERVO SHAFT and RL WHEEL HOUSING STRUCTURE -->
+    <joint name="RL_shaft_to_RL_wheel_housing_structure_joint" type="fixed">
+        <parent link="RL_shaft_link"/>
+        <child link="RL_wheel_housing_structure_link"/>
+
+        <!-- This origin offset places the shaft right into the hole of the wheel housing structure -->
+        <origin xyz="-0.01771 0.00 -0.04521" rpy="0 0 0"/>
+    </joint>
+
+    <!-- REAR LEFT acetal wheel link -->
+    <link name="RL_acetal_wheel_link">
+        <visual>
+            <geometry>
+                <mesh filename="package://projx_robot_description/meshes/acetal_wheel_v1.dae"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- Joint between RL WHEEL HOUSING STRUCTURE and RL ACETAL WHEEL -->
+    <joint name="RL_wheel_housing_structure_to_FR_acetal_wheel_joint" type="revolute">
+        <parent link="RL_wheel_housing_structure_link"/>
+        <child link="RL_acetal_wheel_link"/>
+        
+        <!-- Rotate around the Y axis -->
+        <axis xyz="0 1 0"/>
+
+        <!-- This origin offset places the wheel in line with the rotary encoder hole -->
+        <origin xyz="0.01853 0 -0.02573"/>
+        <limit lower="-0.9" upper="0.9" effort="0.1" velocity="0.005"/>
+    </joint>
+
+</robot>

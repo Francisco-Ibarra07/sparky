@@ -1,0 +1,18 @@
+<launch>	  
+	
+	<!-- Define an empty world and add objects -->
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">	    
+		<arg name="world_name" value="$(find projx_robot_gazebo)/worlds/projx.world"/>
+		<arg name="gui" value="true"/>	  
+	</include>	
+
+	<!-- Convert XACRO into URDF file and load onto the parameter server -->
+	<param name="robot_description" command="$(find xacro)/xacro --inorder $(find projx_robot_description)/urdf/projx_robot.xacro"/>
+
+	<!-- Input 'robot_description' from param server into 'spawn_model' node to spawn robot in gazebo -->
+	<node name="projx_robot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model sparky"/>
+
+	<!-- Include controller_manager launch file (i.e gazebo_ros_control configurations) -->
+	<!-- <include file="$(find projx_robot_control)/launch/projx_robot_control.launch"/> -->
+
+</launch>

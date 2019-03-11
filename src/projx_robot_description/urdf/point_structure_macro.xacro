@@ -1,0 +1,191 @@
+<?xml version="1.0"?>
+<robot>
+	<!-- A whole macro for the whole wheel housing. It includes the servo and servo shaft -->
+	<macro name="point_structure" params="location x_translation y_translation">
+
+                       <!-- ######################################### Servo ######################################### -->
+		<!-- Servo link-->
+		<link name="${location}_servo_link">
+			<collision>
+				<geometry>
+					<box size="${SERVO_LENGTH} ${SERVO_WIDTH} ${SERVO_HEIGHT}"/>
+				</geometry>
+			</collision>
+
+			<visual>
+				<geometry>
+					<!-- Actual servo dimensions: LxWxH = 54.10mm x 20mm x 44.25mm -->
+					<mesh filename="package://projx_robot_description/meshes/servo_v1.dae"/>
+				</geometry>
+			</visual>
+
+			<inertial>
+				<!-- Utilize "box_inertia" macro defined in macros.xacro -->
+				<mass value="${SERVO_MASS}"/>
+				<box_inertia m="${SERVO_MASS}" x="${SERVO_LENGTH}" y="${SERVO_WIDTH}" z="${SERVO_HEIGHT}"/>
+			</inertial>
+
+		</link>
+
+		<!-- Joint between BASE and ${location} SERVO -->
+		<joint name="base_to_${location}_servo_joint" type="fixed">
+			<parent link="base_link"/>
+			<child link="${location}_servo_link"/>
+
+			<!-- REMEMBER: box size is in TOTAL. Distance from origin to edge is half! -->
+			<origin xyz="${x_translation * 0.1682} ${y_translation * 0.1801} 0.0275" rpy="0 0 0"/>
+		</joint>
+
+                       <!-- ######################################### Servo shaft ######################################### -->
+
+		<!-- Servo shaft link-->
+		<link name="${location}_shaft_link">
+
+			<collision>
+				<geometry>
+					<!-- Servo Shaft dimensions: radius=3.0mm, length=25.4mm  -->
+					<cylinder radius="${SERVO_SHAFT_RADIUS}" length="${SERVO_SHAFT_LENGTH}"/>
+				</geometry>
+			</collision>
+
+			<visual>
+				<geometry>
+					<!-- Servo Shaft dimensions: radius=3.0mm, length=25.4mm  -->
+					<cylinder radius="${SERVO_SHAFT_RADIUS}" length="${SERVO_SHAFT_LENGTH}"/>
+				</geometry>
+			</visual>
+
+			<inertial>
+				<mass value="${SERVO_SHAFT_MASS}"/>
+				<cylinder_inertia m="${SERVO_SHAFT_MASS}" r="${SERVO_SHAFT_RADIUS}" h="${SERVO_SHAFT_LENGTH}"/>
+			</inertial>
+		</link>
+
+		<!-- Joint between ${location} SERVO and ${location} SERVO SHAFT -->
+		<joint name="${location}_servo_to_${location}_shaft_joint" type="revolute">
+			<parent link="${location}_servo_link"/>
+			<child link="${location}_shaft_link"/>
+			<axis xyz="0 0 1"/>
+			
+			<!-- This origin offset places the newly created shaft link right in line with the servo's shaft-->
+			<origin xyz="0.00983 0.00102 -0.03319" rpy="0 0 0"/>
+			<limit lower="${PI * -1}" upper="${PI/2 * -1}" effort="100" velocity="100"/>
+		</joint>
+		
+                       <!-- ######################################### Wheel housing structure ######################################### -->
+
+		<!-- Front left wheel housing structure link -->
+		<link name="${location}_wheel_housing_structure_link">
+			<collision>
+				<geometry>
+					<mesh filename="package://projx_robot_description/meshes/wheel_housing_structure_v1.dae"/>
+				</geometry>
+			</collision>
+
+			<visual>
+				<geometry>
+					<mesh filename="package://projx_robot_description/meshes/wheel_housing_structure_v1.dae"/>
+				</geometry>
+			</visual>
+
+			<inertial>
+				<mass value="${WH_MASS}"/>
+				<box_inertia m="${WH_MASS}" x="${WH_LENGTH}" y="${WH_WIDTH}" z="${WH_HEIGHT}"/>
+			</inertial>
+		</link>
+
+		<!-- Joint between FL SERVO SHAFT and FL WHEEL HOUSING STRUCTURE -->
+		<joint name="${location}_shaft_to_${location}_wheel_housing_structure_joint" type="fixed">
+			<parent link="${location}_shaft_link"/>
+			<child link="${location}_wheel_housing_structure_link"/>
+
+			<!-- This origin offset places the shaft right into the hole of the wheel housing structure -->
+			<origin xyz="-0.01771 0.00 -0.04521" rpy="0 0 0"/>
+		</joint>
+
+
+                       <!-- ######################################### Acetal Wheel ######################################### -->
+
+
+		<!-- Acetal wheel link -->
+		<link name="${location}_acetal_wheel_link">
+
+			<collision>
+				<geometry>
+					<mesh filename="package://projx_robot_description/meshes/acetal_wheel_v1.dae"/>
+				</geometry>
+			</collision>
+
+			<surface>
+				<friction>
+					<ode>
+						<mu>1.0</mu>
+						<mu2>1.0</mu2>
+					</ode>
+				</friction>
+      		</surface>
+
+			<visual>
+				<geometry>
+					<mesh filename="package://projx_robot_description/meshes/acetal_wheel_v1.dae"/>
+				</geometry>
+			</visual>
+
+			<inertial>
+				<mass value="${WHEEL_MASS}"/>
+				<cylinder_inertia m="${WHEEL_MASS}" r="${WHEEL_RADIUS}" h="${WHEEL_WIDTH}"/>
+			</inertial>
+
+			<gazebo reference="${location}_acetal_wheel_link">
+				<mu1 value="1.0"/>
+				<mu2 value="1.0"/>
+				<kp  value="10000000.0" />
+				<kd  value="1.0" />
+				<fdir1 value="1 0 0"/>
+			</gazebo>
+
+		</link>
+
+		<!-- Joint between FL WHEEL HOUSING STRUCTURE and FL ACETAL WHEEL -->
+		<joint name="${location}_wheel_housing_structure_to_${location}_acetal_wheel_joint" type="continuous">
+			<parent link="${location}_wheel_housing_structure_link"/>
+			<child link="${location}_acetal_wheel_link"/>
+			
+			<!-- Rotate around the Y axis -->
+			<axis xyz="0 1 0"/>
+
+			<!-- This origin offset places the wheel in line with the rotary encoder hole -->
+			<origin xyz="0.01853 0 -0.02573"/>
+			<limit effort="10" velocity="10"/>
+		</joint>
+
+
+                       <!-- ######################################### Transmission tags ######################################### -->
+
+		<!-- Transmission tag for wheel joint -->
+		<transmission name="${location}_wheel_trans">
+			<type>transmission_interface/SimpleTransmission</type>
+			<joint name="${location}_wheel_housing_structure_to_${location}_acetal_wheel_joint">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+			</joint>
+			<actuator name="${location}_motor">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+				<mechanicalReduction>10</mechanicalReduction>
+			</actuator>
+		</transmission>
+
+		<!-- Transmission tag for servo joint -->
+		<transmission name="${location}_servo_trans">
+			<type>transmission_interface/SimpleTransmission</type>
+			<joint name="${location}_servo_to_${location}_shaft_joint">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+			</joint>
+			<actuator name="${location}_servo">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+				<mechanicalReduction>10</mechanicalReduction>
+			</actuator>
+		</transmission>
+
+	</macro> <!-- End point_structure macro -->
+
+</robot>
